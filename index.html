@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТРИО — рекламное агентство полного цикла в Твери</title>
+<meta name="description" content="Рекламное агентство «ТРИО»: промо-акции, мероприятия, мерчендайзинг, детские праздники, реклама в СМИ. Эффектная и эффективная реклама в Твери.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#0d0b08;
+  --bg-2:#151209;
+  --ink:#f4efe6;
+  --ink-dim:rgba(244,239,230,.55);
+  --ink-faint:rgba(244,239,230,.18);
+  --accent:#ff4d00;
+  --accent-soft:rgba(255,77,0,.14);
+  --line:rgba(244,239,230,.14);
+  --font-display:'Unbounded',sans-serif;
+  --font-body:'Manrope',sans-serif;
+  --pad:clamp(1.25rem,4vw,4.5rem);
+  --radius:2px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:#0d0b08}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+img,svg{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--font-display);font-weight:800;line-height:1.05;text-transform:uppercase;letter-spacing:-.01em}
+main{position:relative;z-index:1}
+
+/* ============ GRAIN + GLOW ============ */
+.grain{
+  position:fixed;inset:-50%;z-index:2000;pointer-events:none;
+  width:200%;height:200%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.045;
+  mix-blend-mode:overlay;
+  animation:grain 8s steps(10) infinite;
+}
+@keyframes grain{
+  0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-10%)}20%{transform:translate(-15%,5%)}
+  30%{transform:translate(7%,-25%)}40%{transform:translate(-5%,25%)}50%{transform:translate(-15%,10%)}
+  60%{transform:translate(15%,0)}70%{transform:translate(0,15%)}80%{transform:translate(3%,35%)}90%{transform:translate(-10%,10%)}
+}
+@media (prefers-reduced-motion:reduce){.grain{animation:none}}
+
+/* ============ PRELOADER ============ */
+.preloader{position:fixed;inset:0;z-index:3000;display:grid;place-items:center}
+.preloader__panel{position:absolute;inset:0;background:var(--bg-2)}
+.preloader__panel--top{clip-path:polygon(0 0,100% 0,100% 50%,0 50%)}
+.preloader__panel--bottom{clip-path:polygon(0 50%,100% 50%,100% 100%,0 100%)}
+.preloader__inner{position:relative;z-index:2;text-align:center}
+.preloader__word{font-family:var(--font-display);font-weight:900;font-size:clamp(3rem,10vw,7rem);letter-spacing:.06em;line-height:1}
+.preloader__word span{color:var(--accent)}
+.preloader__tag{margin-top:.9rem;font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:var(--ink-dim)}
+.preloader__count{position:fixed;right:var(--pad);bottom:calc(var(--pad) - .15em);z-index:2;font-family:var(--font-display);font-weight:300;font-size:clamp(2rem,5vw,4rem);line-height:1;color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.preloader__bar{position:absolute;left:0;top:0;height:2px;width:100%;background:var(--line);z-index:2}
+.preloader__bar i{display:block;height:100%;width:0%;background:var(--accent)}
+
+/* ============ CURSOR ============ */
+.cursor,.cursor-ring{position:fixed;top:0;left:0;z-index:2500;pointer-events:none;border-radius:50%;opacity:0}
+.cursor{width:8px;height:8px;background:var(--accent);margin:-4px 0 0 -4px}
+.cursor-ring{width:40px;height:40px;border:1px solid rgba(255,77,0,.6);margin:-20px 0 0 -20px;transition:transform .25s ease,background-color .25s ease,border-color .25s ease}
+.cursor-ring.is-active{transform:scale(1.8);background:rgba(255,77,0,.12);border-color:transparent}
+@media (hover:none),(pointer:coarse){.cursor,.cursor-ring{display:none}}
+
+/* ============ HEADER ============ */
+.header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:1rem var(--pad);
+  transition:transform .5s cubic-bezier(.22,1,.36,1),background-color .4s ease,border-color .4s ease;
+  border-bottom:1px solid transparent;
+}
+.header.is-hidden{transform:translateY(-110%)}
+.header.is-scrolled{background:rgba(13,11,8,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+.header__logo{font-family:var(--font-display);font-weight:900;font-size:1.15rem;letter-spacing:.08em}
+.header__logo span{color:var(--accent)}
+.header__nav{display:flex;gap:2rem}
+.header__link{position:relative;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);transition:color .3s ease;padding:.35rem 0}
+.header__link::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.header__link:hover{color:var(--ink)}
+.header__link:hover::after{transform:scaleX(1);transform-origin:left}
+.header__phone{font-weight:700;font-size:.88rem;color:var(--ink);white-space:nowrap}
+.header__burger{display:none;flex-direction:column;gap:5px;padding:.5rem}
+.header__burger i{display:block;width:24px;height:2px;background:var(--ink);transition:transform .35s ease,opacity .35s ease}
+.header__burger.is-open i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.header__burger.is-open i:nth-child(2){opacity:0}
+.header__burger.is-open i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{
+  position:fixed;inset:0;z-index:900;display:flex;flex-direction:column;justify-content:center;gap:1.5rem;
+  padding:0 var(--pad);background:var(--bg-2);
+  clip-path:inset(0 0 100% 0);visibility:hidden;
+  transition:clip-path .6s cubic-bezier(.76,0,.24,1),visibility 0s .6s;
+}
+.mobile-menu.is-open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .6s cubic-bezier(.76,0,.24,1)}
+.mobile-menu a{font-family:var(--font-display);font-weight:600;font-size:clamp(1.6rem,7vw,3rem);text-transform:uppercase;color:var(--ink-dim);transition:color .3s}
+.mobile-menu a:hover{color:var(--accent)}
+@media(max-width:860px){
+  .header__nav,.header__phone{display:none}
+  .header__burger{display:flex}
+}
+
+/* ============ SHARED ============ */
+.section{padding:clamp(5rem,12vh,9rem) var(--pad);position:relative}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;margin-bottom:clamp(2.5rem,6vh,4.5rem)}
+.kicker{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem}
+.kicker::before{content:"";width:34px;height:1px;background:var(--accent)}
+.h2{font-size:clamp(1.9rem,4.6vw,3.9rem)}
+.h2 .stroke{color:transparent;-webkit-text-stroke:1.5px var(--ink)}
+.lead{max-width:34rem;color:var(--ink-dim);font-size:1.05rem}
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:.8rem;overflow:hidden;
+  padding:1.05rem 2.1rem;border:1px solid var(--ink);border-radius:var(--radius);
+  font-weight:700;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+  isolation:isolate;will-change:transform;
+}
+.btn::before{content:"";position:absolute;inset:0;background:var(--accent);transform:translateY(101%);transition:transform .45s cubic-bezier(.76,0,.24,1);z-index:-1}
+.btn:hover::before{transform:translateY(0)}
+.btn:hover{color:#0d0b08;border-color:var(--accent)}
+.btn--solid{background:var(--accent);border-color:var(--accent);color:#0d0b08}
+.btn--solid::before{background:var(--ink)}
+.btn__arrow{font-family:var(--font-display);font-weight:400;transition:transform .35s ease}
+.btn:hover .btn__arrow{transform:translateX(6px)}
+
+/* ============ HERO ============ */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--pad);position:relative;overflow:hidden}
+.hero__decor{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero__glow{position:absolute;top:-25%;right:-15%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(255,77,0,.16),transparent 62%);filter:blur(10px)}
+.hero__ring{position:absolute;bottom:-12%;left:-8%;width:42vw;height:42vw;border:1px solid var(--line);border-radius:50%}
+.hero__ring::after{content:"";position:absolute;inset:11%;border:1px dashed var(--ink-faint);border-radius:50%}
+.hero__bigindex{position:absolute;top:8%;right:var(--pad);font-family:var(--font-display);font-weight:900;font-size:clamp(6rem,22vw,20rem);line-height:.85;color:transparent;-webkit-text-stroke:1px var(--ink-faint);user-select:none}
+.hero__content{position:relative;z-index:2;padding-top:9rem;width:100%}
+.hero__topline{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);border-top:1px solid var(--line);padding-top:1.1rem;max-width:56rem}
+.hero h1{font-size:clamp(2.5rem,8.4vw,7.6rem);margin:2rem 0 2.4rem;max-width:20ch}
+.hero h1 .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.hero h1 .w i{display:inline-block;font-style:normal;transform:translateY(110%)}
+.hero h1 .stroke{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.hero h1 .accent{color:var(--accent)}
+.hero__row{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:clamp(2.5rem,6vh,4rem)}
+.hero__sub{max-width:26rem;color:var(--ink-dim)}
+.hero__sub strong{color:var(--ink)}
+.hero__actions{display:flex;gap:1rem;flex-wrap:wrap}
+.hero__scrollhint{position:absolute;right:var(--pad);bottom:8.5rem;z-index:2;display:flex;flex-direction:column;align-items:center;gap:.8rem;color:var(--ink-dim);font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;writing-mode:vertical-rl}
+.hero__scrollhint::after{content:"";width:1px;height:56px;background:linear-gradient(var(--accent),transparent);animation:hint 1.8s ease-in-out infinite}
+@keyframes hint{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (prefers-reduced-motion:reduce){.hero__scrollhint::after{animation:none}}
+@media(max-width:700px){.hero__scrollhint{display:none}}
+
+/* ============ MARQUEE ============ */
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding:1.15rem 0;background:var(--bg-2)}
+.marquee__track{display:flex;width:max-content;will-change:transform;animation:marquee 26s linear infinite}
+.marquee--reverse .marquee__track{animation-direction:reverse}
+.marquee:hover .marquee__track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.marquee__track{animation:none}}
+.marquee__item{display:inline-flex;align-items:center;gap:2.2rem;padding-right:2.2rem;font-family:var(--font-display);font-weight:600;font-size:clamp(.95rem,2vw,1.5rem);text-transform:uppercase;white-space:nowrap}
+.marquee__item em{font-style:normal;color:var(--accent);font-size:.8em}
+.marquee__item:nth-child(even){color:transparent;-webkit-text-stroke:1px var(--ink-dim)}
+
+/* ============ ABOUT ============ */
+.about{background:var(--bg)}
+.about__grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(2rem,6vw,6rem);align-items:start}
+.about__text p{color:var(--ink-dim);font-size:1.06rem;max-width:36rem}
+.about__text p+p{margin-top:1.2rem}
+.about__text .hl{color:var(--ink);font-weight:700}
+.about__quote{margin-top:2.4rem;padding-left:1.4rem;border-left:2px solid var(--accent);font-family:var(--font-display);font-weight:400;font-size:1.15rem;line-height:1.5;color:var(--ink);text-transform:none;letter-spacing:0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:var(--bg);padding:2rem 1.6rem;display:flex;flex-direction:column;gap:.5rem;transition:background-color .4s ease}
+.stat:hover{background:var(--accent-soft)}
+.stat__num{font-family:var(--font-display);font-weight:800;font-size:clamp(2.2rem,4.5vw,3.6rem);line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat__num sup{font-size:.45em;color:var(--accent)}
+.stat__label{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim)}
+@media(max-width:860px){.about__grid{grid-template-columns:1fr}}
+
+/* ============ SERVICES ============ */
+.services{background:var(--bg-2)}
+.services__list{border-top:1px solid var(--line)}
+.service{border-bottom:1px solid var(--line)}
+.service__head{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;gap:clamp(1rem,3vw,2.5rem);padding:clamp(1.4rem,3.2vh,2.1rem) .25rem;text-align:left;transition:padding-left .4s cubic-bezier(.22,1,.36,1)}
+.service__head:hover{padding-left:1.2rem}
+.service__num{font-family:var(--font-display);font-weight:300;font-size:clamp(.9rem,1.6vw,1.2rem);color:var(--accent);font-variant-numeric:tabular-nums}
+.service__title{font-family:var(--font-display);font-weight:600;font-size:clamp(1.15rem,3.1vw,2.2rem);text-transform:uppercase;line-height:1.15;transition:color .3s ease,transform .5s cubic-bezier(.22,1,.36,1)}
+.service__head:hover .service__title{transform:translateX(6px)}
+.service.is-open .service__title,.service__head:hover .service__title{color:var(--accent)}
+.service__icon{position:relative;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;flex:none;align-self:center;transition:border-color .3s,background-color .3s,transform .5s cubic-bezier(.22,1,.36,1)}
+.service__icon::before,.service__icon::after{content:"";position:absolute;top:50%;left:50%;width:12px;height:1.5px;background:var(--ink);transform:translate(-50%,-50%);transition:background-color .3s}
+.service__icon::after{transform:translate(-50%,-50%) rotate(90deg)}
+.service.is-open .service__icon{transform:rotate(135deg);background:var(--accent);border-color:var(--accent)}
+.service.is-open .service__icon::before,.service.is-open .service__icon::after{background:#0d0b08}
+.service__body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.76,0,.24,1)}
+.service.is-open .service__body{grid-template-rows:1fr}
+.service__body-in{overflow:hidden}
+.service__content{display:grid;grid-template-columns:auto 1fr;gap:clamp(1rem,3vw,2.5rem);padding:0 .25rem 2rem}
+.service__content .spacer{width:clamp(.9rem,1.6vw,1.2rem)}
+.service__desc{color:var(--ink-dim);max-width:44rem;font-size:1rem}
+.service__tags{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.1rem}
+.service__tag{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.42rem .8rem;border:1px solid var(--line);border-radius:99px;color:var(--ink-dim);transition:color .3s,border-color .3s}
+.service__tag:hover{color:var(--accent);border-color:var(--accent)}
+@media(max-width:700px){
+  .service__head{grid-template-columns:auto 1fr auto}
+  .service__content{grid-template-columns:1fr}
+  .service__content .spacer{display:none}
+}
+
+/* ============ PRINCIPLES ============ */
+.principles__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.principle{background:var(--bg);padding:clamp(1.8rem,3.5vw,3rem);display:flex;flex-direction:column;gap:1.3rem;min-height:20rem;position:relative;overflow:hidden;transition:background-color .4s ease}
+.principle::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.principle:hover::before{transform:scaleX(1)}
+.principle:hover{background:var(--bg-2)}
+.principle__num{font-family:var(--font-display);font-weight:300;font-size:1rem;color:var(--accent)}
+.principle__title{font-family:var(--font-display);font-weight:600;font-size:clamp(1.15rem,2vw,1.55rem);text-transform:uppercase;line-height:1.2}
+.principle__text{color:var(--ink-dim);font-size:.98rem;margin-top:auto}
+.principle__glyph{position:absolute;bottom:-1.5rem;right:-.5rem;font-family:var(--font-display);font-weight:900;font-size:7rem;color:transparent;-webkit-text-stroke:1px var(--ink-faint);user-select:none;pointer-events:none;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.principle:hover .principle__glyph{transform:translateY(-8px) rotate(-4deg)}
+@media(max-width:860px){.principles__grid{grid-template-columns:1fr}.principle{min-height:0}}
+
+/* ============ CLIENTS / CTA ============ */
+.cta{background:var(--bg-2);text-align:center;overflow:hidden}
+.cta__title{font-size:clamp(2rem,6.4vw,5.6rem);max-width:16ch;margin:0 auto 1.4rem}
+.cta__title .accent{color:var(--accent)}
+.cta__title .stroke{color:transparent;-webkit-text-stroke:1.5px var(--ink)}
+.cta__sub{color:var(--ink-dim);max-width:30rem;margin:0 auto 2.6rem}
+.cta .btn{margin-inline:auto}
+.cta__marquee-wrap{margin-top:clamp(4rem,9vh,6rem);opacity:.9}
+
+/* ============ CONTACTS ============ */
+.contacts__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,6rem)}
+.contact-list{display:flex;flex-direction:column}
+.contact-row{display:flex;flex-direction:column;gap:.35rem;padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.contact-row dt{font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim)}
+.contact-row dd{font-family:var(--font-display);font-weight:400;font-size:clamp(1.05rem,2.4vw,1.6rem);line-height:1.35}
+.contact-row a{transition:color .3s}
+.contact-row a:hover{color:var(--accent)}
+.contact-note{margin-top:2rem;color:var(--ink-dim);font-size:.92rem;max-width:26rem}
+.form{display:grid;gap:1.5rem;align-content:start}
+.form__field{position:relative;display:flex;flex-direction:column;gap:.55rem}
+.form__field label{font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim)}
+.form__field input,.form__field textarea,.form__field select{
+  background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;
+  padding:.7rem 0;color:var(--ink);font:inherit;font-size:1rem;outline:none;transition:border-color .3s;
+}
+.form__field textarea{resize:vertical;min-height:5.5rem}
+.form__field input:focus,.form__field textarea:focus{border-bottom-color:var(--accent)}
+.form__field select{color:var(--ink-dim)}
+.form__error{font-size:.78rem;color:var(--accent)}
+.form__success{display:none;padding:1.6rem;border:1px solid var(--accent);background:var(--accent-soft);font-weight:600}
+.form__success.is-visible{display:block}
+.form__legal{font-size:.75rem;color:var(--ink-dim)}
+@media(max-width:860px){.contacts__grid{grid-template-columns:1fr}}
+
+/* ============ FOOTER ============ */
+.footer{border-top:1px solid var(--line);padding:2.2rem var(--pad);display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;font-size:.8rem;color:var(--ink-dim)}
+.footer__logo{font-family:var(--font-display);font-weight:900;letter-spacing:.08em;color:var(--ink)}
+.footer__logo span{color:var(--accent)}
+.footer a:hover{color:var(--accent)}
+.footer__top{width:100%;text-align:center}
+
+/* ============ REVEAL BASE ============ */
+[data-reveal]{will-change:transform,opacity}
+@media (prefers-reduced-motion:reduce){
+  [data-reveal]{opacity:1!important;transform:none!important}
+  .hero h1 .w i{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader__panel preloader__panel--top"></div>
+  <div class="preloader__panel preloader__panel--bottom"></div>
+  <div class="preloader__inner">
+    <div class="preloader__word">ТР<span>И</span>О</div>
+    <div class="preloader__tag">Рекламное агентство · Тверь</div>
+  </div>
+  <div class="preloader__bar"><i id="preloaderBar"></i></div>
+  <div class="preloader__count" id="preloaderCount">0</div>
+</div>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <a href="#" class="header__logo" data-magnetic>ТР<span>И</span>О</a>
+  <nav class="header__nav" aria-label="Основная навигация">
+    <a class="header__link" href="#about">Агентство</a>
+    <a class="header__link" href="#services">Услуги</a>
+    <a class="header__link" href="#principles">Принципы</a>
+    <a class="header__link" href="#contacts">Контакты</a>
+  </nav>
+  <a class="header__phone" href="tel:+79206936005">+7 920 693-60-05</a>
+  <button class="header__burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">Агентство</a>
+  <a href="#services">Услуги</a>
+  <a href="#principles">Принципы</a>
+  <a href="#contacts">Контакты</a>
+  <a href="tel:+79206936005" style="font-size:1.2rem;color:var(--accent);text-transform:none">+7 920 693-60-05</a>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__decor" aria-hidden="true">
+      <div class="hero__glow" data-parallax="-0.15"></div>
+      <div class="hero__ring" data-parallax="0.1"></div>
+      <div class="hero__bigindex" data-parallax="0.22">ТРИО</div>
+    </div>
+
+    <div class="hero__content">
+      <div class="hero__topline">
+        <span>BTL · Промо · Мерчендайзинг</span>
+        <span>Тверь · с 2004 года</span>
+      </div>
+      <h1 id="heroTitle">
+        <span class="w"><i class="stroke">Эффектная</i></span>
+        <span class="w"><i>и</i></span><br>
+        <span class="w"><i class="accent">эффективная</i></span>
+        <span class="w"><i>реклама</i></span>
+      </h1>
+      <div class="hero__row">
+        <p class="hero__sub">Рекламное агентство «ТРИО» — <strong>сотни реализованных проектов</strong> для брендов Твери и всей России. Оперативно реагируем. Всегда готовы к диалогу.</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="#contacts" data-magnetic>Обсудить проект <span class="btn__arrow">→</span></a>
+          <a class="btn" href="#services" data-magnetic>Услуги</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scrollhint" aria-hidden="true">скролл</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__item">Промо-акции <em>✦</em></span>
+      <span class="marquee__item">Мероприятия <em>✦</em></span>
+      <span class="marquee__item">Мерчендайзинг <em>✦</em></span>
+      <span class="marquee__item">Детские праздники <em>✦</em></span>
+      <span class="marquee__item">Тайный аудит <em>✦</em></span>
+      <span class="marquee__item">Реклама в СМИ <em>✦</em></span>
+      <span class="marquee__item">Промо-акции <em>✦</em></span>
+      <span class="marquee__item">Мероприятия <em>✦</em></span>
+      <span class="marquee__item">Мерчендайзинг <em>✦</em></span>
+      <span class="marquee__item">Детские праздники <em>✦</em></span>
+      <span class="marquee__item">Тайный аудит <em>✦</em></span>
+      <span class="marquee__item">Реклама в СМИ <em>✦</em></span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="section about" id="about">
+    <div class="about__grid">
+      <div class="about__text">
+        <p class="kicker" data-reveal>01 · Агентство</p>
+        <h2 class="h2" data-reveal>Мы — динамичны<br>и <span class="stroke">амбициозны</span></h2>
+        <div style="margin-top:2rem" data-reveal>
+          <p>Специализация агентства — <span class="hl">BTL-услуги</span>: промо-акции, мерчендайзинг, специальные мероприятия и частные праздники. За время работы в рекламном бизнесе мы успешно реализовали сотни проектов, направленных на продвижение брендов.</p>
+          <p>Перечень наших услуг ограничен только вашими пожеланиями — если задача решается рекламой, мы её решаем.</p>
+          <blockquote class="about__quote">«Мы умеем делать эффектную и эффективную рекламу — и всегда готовы к диалогу»</blockquote>
+        </div>
+      </div>
+      <div class="stats" data-reveal>
+        <div class="stat">
+          <div class="stat__num"><span data-count="100">0</span><sup>+</sup></div>
+          <div class="stat__label">реализованных проектов</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num"><span data-count="7">0</span></div>
+          <div class="stat__label">направлений BTL</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num"><span data-count="20">0</span><sup>+</sup></div>
+          <div class="stat__label">лет в рекламе</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num"><span data-count="100">0</span><sup>%</sup></div>
+          <div class="stat__label">оперативная реакция</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section services" id="services">
+    <div class="section-head">
+      <div>
+        <p class="kicker" data-reveal>02 · Услуги</p>
+        <h2 class="h2" data-reveal>Что мы <span class="stroke">делаем</span></h2>
+      </div>
+      <p class="lead" data-reveal>Основные направления работы — от выхода промоперсонала до исследований и размещения рекламы. Выберите направление, чтобы узнать подробнее.</p>
+    </div>
+
+    <div class="services__list" id="servicesList">
+      <!-- 01 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">01</span>
+          <span class="service__title">Промо-акции</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Рекламные мероприятия с промоперсоналом: дегустации, сэмплинг, раздача листовок и подарков, работа в торговых точках и на улицах города. Эффектный контакт бренда с аудиторией «здесь и сейчас».</p>
+              <div class="service__tags"><span class="service__tag">Дегустации</span><span class="service__tag">Сэмплинг</span><span class="service__tag">Промоутеры</span><span class="service__tag">Торговые точки</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 02 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">02</span>
+          <span class="service__title">Организация мероприятий</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Специальные события под ключ: презентации, корпоративы, городские праздники, открытия. Концепция, программа, персонал и оборудование — всё в одном агентстве.</p>
+              <div class="service__tags"><span class="service__tag">Под ключ</span><span class="service__tag">Презентации</span><span class="service__tag">Корпоративы</span><span class="service__tag">Открытия</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 03 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">03</span>
+          <span class="service__title">Детские праздники</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Частные и семейные праздники: аниматоры, шоу-программы, игры и сюрпризы. Яркие впечатления для детей и спокойствие для родителей.</p>
+              <div class="service__tags"><span class="service__tag">Аниматоры</span><span class="service__tag">Шоу-программы</span><span class="service__tag">Дни рождения</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 04 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">04</span>
+          <span class="service__title">Костюмы и ростовые куклы</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Аренда и обслуживание костюмов и ростовых кукол — персонаж, который невозможно не заметить. Идеально для промо, праздников и сопровождения мероприятий.</p>
+              <div class="service__tags"><span class="service__tag">Аренда</span><span class="service__tag">Маскот-сопровождение</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 05 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">05</span>
+          <span class="service__title">Мерчендайзинг и монтаж POSM</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Размещение и обслуживание рекламного оборудования: выкладка товара, установка и ремонт POS-материалов, контроль присутствия в торговых сетях.</p>
+              <div class="service__tags"><span class="service__tag">Выкладка</span><span class="service__tag">POSM</span><span class="service__tag">Аудит полки</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 06 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">06</span>
+          <span class="service__title">Маркетинговые исследования</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Тайный аудит и полевые исследования: проверка стандартов обслуживания, замеры представленности, обратная связь с точки зрения клиента.</p>
+              <div class="service__tags"><span class="service__tag">Тайный покупатель</span><span class="service__tag">Аудит</span><span class="service__tag">Отчётность</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+      <!-- 07 -->
+      <article class="service" data-reveal>
+        <button class="service__head" aria-expanded="false">
+          <span class="service__num">07</span>
+          <span class="service__title">Реклама в СМИ и рассылки</span>
+          <span class="service__icon" aria-hidden="true"></span>
+        </button>
+        <div class="service__body"><div class="service__body-in">
+          <div class="service__content">
+            <span class="spacer" aria-hidden="true"></span>
+            <div>
+              <p class="service__desc">Размещение рекламы в СМИ и безадресная рассылка по почтовым ящикам — проверенные каналы охвата, которые продолжают работать на локальный спрос.</p>
+              <div class="service__tags"><span class="service__tag">СМИ</span><span class="service__tag">Листовки в ящики</span><span class="service__tag">Охват</span></div>
+            </div>
+          </div>
+        </div></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section class="section principles" id="principles">
+    <div class="section-head">
+      <div>
+        <p class="kicker" data-reveal>03 · Принципы</p>
+        <h2 class="h2" data-reveal>Как мы <span class="stroke">работаем</span></h2>
+      </div>
+    </div>
+    <div class="principles__grid">
+      <article class="principle" data-reveal>
+        <span class="principle__num">01</span>
+        <h3 class="principle__title">Оперативно реагируем</h3>
+        <p class="principle__text">Запрос сегодня — ответ сегодня. Мы понимаем, что в рекламе скорость часто решает всё.</p>
+        <span class="principle__glyph" aria-hidden="true">⚡</span>
+      </article>
+      <article class="principle" data-reveal>
+        <span class="principle__num">02</span>
+        <h3 class="principle__title">Эффектная и эффективная</h3>
+        <p class="principle__text">Красиво — недостаточно. Каждый проект проектируем под измеримый результат бренда.</p>
+        <span class="principle__glyph" aria-hidden="true">✦</span>
+      </article>
+      <article class="principle" data-reveal>
+        <span class="principle__num">03</span>
+        <h3 class="principle__title">Всегда к диалогу</h3>
+        <p class="principle__text">Перечень услуг ограничен только вашими пожеланиями. Слушаем, предлагаем, делаем.</p>
+        <span class="principle__glyph" aria-hidden="true">✳</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta" id="clients">
+    <p class="kicker" data-reveal style="justify-content:center;display:inline-flex">04 · Клиенты</p>
+    <h2 class="cta__title" data-reveal>Сотни брендов <span class="stroke">уже выросли</span> <span class="accent">с нами</span></h2>
+    <p class="cta__sub" data-reveal>Промо-акции, праздники, тайный аудит, размещение рекламного оборудования, безадресная рассылка — и это только начало списка.</p>
+    <a class="btn btn--solid" href="#contacts" data-magnetic data-reveal>Стать клиентом <span class="btn__arrow">→</span></a>
+    <div class="cta__marquee-wrap marquee marquee--reverse" aria-hidden="true">
+      <div class="marquee__track">
+        <span class="marquee__item">Ваши пожелания — наш каталог <em>✦</em></span>
+        <span class="marquee__item">Промо <em>✦</em></span>
+        <span class="marquee__item">Праздники <em>✦</em></span>
+        <span class="marquee__item">Аудит <em>✦</em></span>
+        <span class="marquee__item">POSM <em>✦</em></span>
+        <span class="marquee__item">Рассылка <em>✦</em></span>
+        <span class="marquee__item">Ваши пожелания — наш каталог <em>✦</em></span>
+        <span class="marquee__item">Промо <em>✦</em></span>
+        <span class="marquee__item">Праздники <em>✦</em></span>
+        <span class="marquee__item">Аудит <em>✦</em></span>
+        <span class="marquee__item">POSM <em>✦</em></span>
+        <span class="marquee__item">Рассылка <em>✦</em></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTS -->
+  <section class="section contacts" id="contacts">
+    <div class="section-head">
+      <div>
+        <p class="kicker" data-reveal>05 · Контакты</p>
+        <h2 class="h2" data-reveal>Давайте <span class="stroke">обсудим</span></h2>
+      </div>
+    </div>
+    <div class="contacts__grid">
+      <div data-reveal>
+        <dl class="contact-list">
+          <div class="contact-row">
+            <dt>Телефоны</dt>
+            <dd><a href="tel:+79206936005">+7 920 693-60-05</a><br><a href="tel:+79206877656">+7 920 687-76-56</a></dd>
+          </div>
+          <div class="contact-row">
+            <dt>Почта</dt>
+            <dd><a href="mailto:info@trio-tver.ru">info@trio-tver.ru</a></dd>
+          </div>
+          <div class="contact-row">
+            <dt>Адрес</dt>
+            <dd>170034, г. Тверь,<br>пр-т Чайковского, 28/2,<br>офисы 719</dd>
+          </div>
+        </dl>
+        <p class="contact-note">Работаем по всей Тверской области. Оперативно отвечаем на запросы в рабочее время.</p>
+      </div>
+
+      <form class="form" id="contactForm" novalidate data-reveal>
+        <div class="form__field">
+          <label for="fName">Ваше имя</label>
+          <input id="fName" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться">
+          <span class="form__error" data-error-for="name"></span>
+        </div>
+        <div class="form__field">
+          <label for="fPhone">Телефон</label>
+          <input id="fPhone" name="phone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__">
+          <span class="form__error" data-error-for="phone"></span>
+        </div>
+        <div class="form__field">
+          <label for="fTask">Задача</label>
+          <select id="fTask" name="task">
+            <option>Промо-акция</option>
+            <option>Мероприятие</option>
+            <option>Детский праздник</option>
+            <option>Мерчендайзинг / POSM</option>
+            <option>Исследование / аудит</option>
+            <option>Реклама в СМИ / рассылка</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form__field">
+          <label for="fMsg">Комментарий</label>
+          <textarea id="fMsg" name="message" rows="3" placeholder="Кратко о проекте"></textarea>
+        </div>
+        <button class="btn btn--solid" type="submit" data-magnetic style="justify-self:start">Отправить заявку <span class="btn__arrow">→</span></button>
+        <p class="form__legal">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+        <div class="form__success" id="formSuccess" role="status">Спасибо! Заявка получена — мы свяжемся с вами в ближайшее время.</div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="footer__logo">ТР<span>И</span>О</span>
+  <span>Рекламное агентство · Тверь · пр-т Чайковского, 28/2</span>
+  <a href="mailto:info@trio-tver.ru">info@trio-tver.ru</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  gsap.registerPlugin(ScrollTrigger);
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------- Smooth scroll (Lenis) ---------- */
+  var lenis = null;
+  function initSmoothScroll(){
+    if (reducedMotion || typeof Lenis === 'undefined') return;
+    lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ---------- Anchor navigation ---------- */
+  function scrollToTarget(hash){
+    var target = document.querySelector(hash);
+    if (!target) return;
+    if (lenis) lenis.scrollTo(target, { offset: -70, duration: 1.2 });
+    else target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+  }
+  function initAnchors(){
+    document.querySelectorAll('a[href^="#"]').forEach(function(link){
+      link.addEventListener('click', function(e){
+        var hash = link.getAttribute('href');
+        if (hash.length < 2) return;
+        e.preventDefault();
+        closeMenu();
+        scrollToTarget(hash);
+      });
+    });
+  }
+
+  /* ---------- Preloader ---------- */
+  function runPreloader(onDone){
+    var pre = document.getElementById('preloader');
+    var count = { value: 0 };
+    var counterEl = document.getElementById('preloaderCount');
+    var barEl = document.getElementById('preloaderBar');
+
+    if (reducedMotion){
+      pre.remove();
+      onDone();
+      return;
+    }
+    if (lenis) lenis.stop();
+
+    gsap.timeline()
+      .to(count, {
+        value: 100, duration: 1.5, ease: 'power2.inOut',
+        onUpdate: function(){
+          var v = Math.round(count.value);
+          counterEl.textContent = v;
+          barEl.style.width = v + '%';
+        }
+      })
+      .to('.preloader__inner, .preloader__count, .preloader__bar', { opacity: 0, duration: .35, ease: 'power1.in' })
+      .to('.preloader__panel--top', { clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)', duration: .9, ease: 'power4.inOut' }, '+=0.05')
+      .to('.preloader__panel--bottom', { clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', duration: .9, ease: 'power4.inOut' }, '<')
+      .add(function(){ pre.remove(); if (lenis) lenis.start(); onDone(); }, '-=0.55');
+  }
+
+  /* ---------- Hero intro ---------- */
+  function playHeroIntro(){
+    if (reducedMotion) return;
+    gsap.timeline({ defaults: { ease: 'power4.out' } })
+      .fromTo('.hero h1 .w i', { yPercent: 110 }, { yPercent: 0, duration: 1.1, stagger: 0.09 })
+      .fromTo('.hero__topline', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .7 }, '-=0.7')
+      .fromTo('.hero__sub, .hero__actions', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .8, stagger: .12 }, '-=0.55')
+      .fromTo('.hero__decor > *', { opacity: 0, scale: .92 }, { opacity: 1, scale: 1, duration: 1.2, stagger: .1 }, '-=0.9')
+      .fromTo('.header', { opacity: 0, y: -18 }, { opacity: 1, y: 0, duration: .7 }, '-=0.9')
+      .fromTo('.hero__scrollhint', { opacity: 0 }, { opacity: 1, duration: .6 }, '-=0.4');
+  }
+
+  /* ---------- Scroll reveals ---------- */
+  function initReveals(){
+    if (reducedMotion) return;
+    gsap.utils.toArray('[data-reveal]').forEach(function(el){
+      gsap.fromTo(el,
+        { opacity: 0, y: 44 },
+        {
+          opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        }
+      );
+    });
+  }
+
+  /* ---------- Parallax decor ---------- */
+  function initParallax(){
+    if (reducedMotion) return;
+    gsap.utils.toArray('[data-parallax]').forEach(function(el){
+      var speed = parseFloat(el.getAttribute('data-parallax')) || 0.1;
+      gsap.to(el, {
+        yPercent: speed * 100, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+    });
+  }
+
+  /* ---------- Animated counters ---------- */
+  function initCounters(){
+    gsap.utils.toArray('[data-count]').forEach(function(el){
+      var end = parseInt(el.getAttribute('data-count'), 10) || 0;
+      if (reducedMotion){ el.textContent = end; return; }
+      var proxy = { value: 0 };
+      ScrollTrigger.create({
+        trigger: el, start: 'top 85%', once: true,
+        onEnter: function(){
+          gsap.to(proxy, {
+            value: end, duration: 1.6, ease: 'power2.out',
+            onUpdate: function(){ el.textContent = Math.round(proxy.value); }
+          });
+        }
+      });
+    });
+  }
+
+  /* ---------- Header hide/reveal on scroll ---------- */
+  function initHeader(){
+    var header = document.getElementById('header');
+    var lastY = 0;
+    function onScroll(y){
+      header.classList.toggle('is-scrolled', y > 40);
+      var goingDown = y > lastY;
+      if (y > 140 && goingDown) header.classList.add('is-hidden');
+      else header.classList.remove('is-hidden');
+      lastY = y;
+    }
+    if (lenis){ lenis.on('scroll', function(e){ onScroll(e.scroll); }); }
+    else { window.addEventListener('scroll', function(){ onScroll(window.scrollY); }, { passive: true }); }
+  }
+
+  /* ---------- Mobile menu ---------- */
+  var burger = document.getElementById('burger');
+  var menu = document.getElementById('mobileMenu');
+  function closeMenu(){
+    burger.classList.remove('is-open');
+    menu.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+  }
+  function initMenu(){
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('is-open');
+      burger.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+    });
+    window.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+  }
+
+  /* ---------- Services accordion ---------- */
+  function initServices(){
+    var services = document.querySelectorAll('.service');
+    function setOpen(service, open){
+      service.classList.toggle('is-open', open);
+      service.querySelector('.service__head').setAttribute('aria-expanded', String(open));
+    }
+    services.forEach(function(service){
+      var head = service.querySelector('.service__head');
+      head.addEventListener('click', function(){
+        var isOpen = service.classList.contains('is-open');
+        services.forEach(function(s){ setOpen(s, false); });
+        if (!isOpen) setOpen(service, true);
+      });
+      if (finePointer){
+        head.addEventListener('mouseenter', function(){
+          services.forEach(function(s){ setOpen(s, s === service); });
+        });
+      }
+    });
+  }
+
+  /* ---------- Custom cursor ---------- */
+  function initCursor(){
+    if (!finePointer || reducedMotion) return;
+    var dot = document.querySelector('.cursor');
+    var ring = document.querySelector('.cursor-ring');
+    var pos = { x: -100, y: -100 };
+    var ringPos = { x: -100, y: -100 };
+
+    window.addEventListener('mousemove', function(e){
+      pos.x = e.clientX; pos.y = e.clientY;
+      gsap.set(dot, { x: pos.x, y: pos.y, opacity: 1 });
+    });
+    gsap.ticker.add(function(){
+      ringPos.x += (pos.x - ringPos.x) * 0.14;
+      ringPos.y += (pos.y - ringPos.y) * 0.14;
+      gsap.set(ring, { x: ringPos.x, y: ringPos.y, opacity: pos.x > 0 ? 1 : 0 });
+    });
+    var interactiveSelector = 'a, button, .service__head, input, textarea, select';
+    document.addEventListener('mouseover', function(e){
+      if (e.target.closest(interactiveSelector)) ring.classList.add('is-active');
+    });
+    document.addEventListener('mouseout', function(e){
+      if (e.target.closest(interactiveSelector)) ring.classList.remove('is-active');
+    });
+    document.addEventListener('mouseleave', function(){ gsap.set([dot, ring], { opacity: 0 }); pos.x = -100; });
+  }
+
+  /* ---------- Magnetic elements ---------- */
+  function initMagnetic(){
+    if (!finePointer || reducedMotion) return;
+    document.querySelectorAll('[data-magnetic]').forEach(function(el){
+      var strength = 0.35;
+      el.addEventListener('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        var relX = e.clientX - (rect.left + rect.width / 2);
+        var relY = e.clientY - (rect.top + rect.height / 2);
+        gsap.to(el, { x: relX * strength, y: relY * strength, duration: .4, ease: 'power2.out' });
+      });
+      el.addEventListener('mouseleave', function(){
+        gsap.to(el, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1, 0.4)' });
+      });
+    });
+  }
+
+  /* ---------- Contact form (boundary validation) ---------- */
+  function validateForm(fields){
+    var errors = {};
+    if (!fields.name || fields.name.trim().length < 2) errors.name = 'Укажите имя (минимум 2 символа)';
+    var digits = (fields.phone || '').replace(/\D/g, '');
+    if (!digits || digits.length < 10) errors.phone = 'Укажите корректный телефон';
+    return { isValid: Object.keys(errors).length === 0, errors: errors };
+  }
+  function initForm(){
+    var form = document.getElementById('contactForm');
+    var success = document.getElementById('formSuccess');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(form);
+      var fields = { name: data.get('name') || '', phone: data.get('phone') || '' };
+      var result = validateForm(fields);
+      form.querySelectorAll('.form__error').forEach(function(el){ el.textContent = ''; });
+      if (!result.isValid){
+        Object.keys(result.errors).forEach(function(key){
+          var errEl = form.querySelector('[data-error-for="' + key + '"]');
+          if (errEl) errEl.textContent = result.errors[key];
+        });
+        return;
+      }
+      success.classList.add('is-visible');
+      form.reset();
+      setTimeout(function(){ success.classList.remove('is-visible'); }, 6000);
+    });
+  }
+
+  /* ---------- Boot ---------- */
+  function boot(){
+    initSmoothScroll();
+    initAnchors();
+    initMenu();
+    initHeader();
+    initServices();
+    initCounters();
+    initForm();
+    if (finePointer){ initCursor(); initMagnetic(); }
+    runPreloader(playHeroIntro);
+    initReveals();
+    initParallax();
+    ScrollTrigger.refresh();
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+</body>
+</html>
