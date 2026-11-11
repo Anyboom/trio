@@ -81,17 +81,47 @@ main{position:relative;z-index:1}
 @media (hover:none),(pointer:coarse){.cursor,.cursor-ring{display:none}}
 
 /* ============ HEADER ============ */
-.header{
-  position:fixed;top:0;left:0;right:0;z-index:1000;
+.header{position:fixed;top:0;left:0;right:0;z-index:1000}
+.header__in{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:1rem var(--pad);
-  transition:transform .5s cubic-bezier(.22,1,.36,1),background-color .4s ease,border-color .4s ease;
-  border-bottom:1px solid transparent;
+  max-width:100%;margin:0 auto;
+  padding:1.35rem var(--pad);
+  transition:max-width .5s cubic-bezier(.22,1,.36,1),margin .5s cubic-bezier(.22,1,.36,1),
+    padding .35s ease,background-color .35s ease,border-color .35s ease,
+    border-radius .5s cubic-bezier(.22,1,.36,1),box-shadow .35s ease;
 }
-.header.is-hidden{transform:translateY(-110%)}
-.header.is-scrolled{background:rgba(13,11,8,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line)}
-.header__logo{font-family:var(--font-display);font-weight:900;font-size:1.15rem;letter-spacing:.08em}
-.header__logo span{color:var(--accent)}
+/* на hero — прозрачная, на всю ширину, как обычная шапка */
+.header.at-top .header__in{padding-block:1.6rem}
+/* при скролле — отсоединяется: сужается и становится облачком */
+.header.pill .header__in{
+  max-width:1040px;
+  margin-top:14px;
+  padding:.65rem 1.8rem;
+  border-radius:999px;
+  background:rgba(21,18,9,.78);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--line);
+  box-shadow:0 14px 34px rgba(0,0,0,.4);
+}
+.header.pill .header__link{font-size:.76rem}
+.header.pill .header__phone{font-size:.8rem}
+.header__cta{
+  background:transparent;
+  border-color:var(--line);
+  border-radius:999px;
+  padding:.68rem 1.5rem;
+  font-size:.74rem;
+  letter-spacing:.12em;
+}
+.header__cta:hover{border-color:var(--accent)}
+.header.pill .header__cta{padding:.55rem 1.3rem;font-size:.72rem}
+.brand{
+  font-family:var(--font-display);font-weight:900;font-size:1.35rem;
+  letter-spacing:.1em;line-height:1;white-space:nowrap;flex:none;
+}
+.brand em{font-style:normal;color:var(--accent)}
+.header.pill .brand{font-size:1.05rem}
 .header__nav{display:flex;gap:2rem}
 .header__link{position:relative;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);transition:color .3s ease;padding:.35rem 0}
 .header__link::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .4s cubic-bezier(.22,1,.36,1)}
@@ -113,8 +143,10 @@ main{position:relative;z-index:1}
 .mobile-menu a{font-family:var(--font-display);font-weight:600;font-size:clamp(1.6rem,7vw,3rem);text-transform:uppercase;color:var(--ink-dim);transition:color .3s}
 .mobile-menu a:hover{color:var(--accent)}
 @media(max-width:860px){
-  .header__nav,.header__phone{display:none}
+  .header__nav,.header__phone,.header__cta{display:none}
   .header__burger{display:flex}
+  .header__in{justify-content:flex-end}
+  .header.pill .header__in{max-width:calc(100% - 2rem)}
 }
 
 /* ============ SHARED ============ */
@@ -278,6 +310,7 @@ main{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){
   [data-reveal]{opacity:1!important;transform:none!important}
   .hero h1 .w i{transform:none!important}
+  .header__in{transition:none}
 }
 </style>
 </head>
@@ -301,15 +334,18 @@ main{position:relative;z-index:1}
 
 <!-- HEADER -->
 <header class="header" id="header">
-  <a href="#" class="header__logo" data-magnetic>ТР<span>И</span>О</a>
-  <nav class="header__nav" aria-label="Основная навигация">
-    <a class="header__link" href="#about">Агентство</a>
-    <a class="header__link" href="#services">Услуги</a>
-    <a class="header__link" href="#principles">Принципы</a>
-    <a class="header__link" href="#contacts">Контакты</a>
-  </nav>
-  <a class="header__phone" href="tel:+79206936005">+7 920 693-60-05</a>
-  <button class="header__burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+  <div class="header__in">
+    <a href="#" class="brand" data-magnetic aria-label="ТРИО — рекламное агентство, Тверь">ТР<em>И</em>О</a>
+    <nav class="header__nav" aria-label="Основная навигация">
+      <a class="header__link" href="#about">Агентство</a>
+      <a class="header__link" href="#services">Услуги</a>
+      <a class="header__link" href="#principles">Принципы</a>
+      <a class="header__link" href="#contacts">Контакты</a>
+    </nav>
+    <a class="header__phone" href="tel:+79206936005">+7 920 693-60-05</a>
+    <a class="btn btn--solid header__cta" href="#contacts" data-magnetic>Обсудить проект</a>
+    <button class="header__burger" id="burger" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
@@ -355,18 +391,18 @@ main{position:relative;z-index:1}
   <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee__track">
-      <span class="marquee__item">Промо-акции <em>✦</em></span>
-      <span class="marquee__item">Мероприятия <em>✦</em></span>
-      <span class="marquee__item">Мерчендайзинг <em>✦</em></span>
-      <span class="marquee__item">Детские праздники <em>✦</em></span>
-      <span class="marquee__item">Тайный аудит <em>✦</em></span>
-      <span class="marquee__item">Реклама в СМИ <em>✦</em></span>
-      <span class="marquee__item">Промо-акции <em>✦</em></span>
-      <span class="marquee__item">Мероприятия <em>✦</em></span>
-      <span class="marquee__item">Мерчендайзинг <em>✦</em></span>
-      <span class="marquee__item">Детские праздники <em>✦</em></span>
-      <span class="marquee__item">Тайный аудит <em>✦</em></span>
-      <span class="marquee__item">Реклама в СМИ <em>✦</em></span>
+      <span class="marquee__item">Промо-акции <em>//</em></span>
+      <span class="marquee__item">Мероприятия <em>//</em></span>
+      <span class="marquee__item">Мерчендайзинг <em>//</em></span>
+      <span class="marquee__item">Детские праздники <em>//</em></span>
+      <span class="marquee__item">Тайный аудит <em>//</em></span>
+      <span class="marquee__item">Реклама в СМИ <em>//</em></span>
+      <span class="marquee__item">Промо-акции <em>//</em></span>
+      <span class="marquee__item">Мероприятия <em>//</em></span>
+      <span class="marquee__item">Мерчендайзинг <em>//</em></span>
+      <span class="marquee__item">Детские праздники <em>//</em></span>
+      <span class="marquee__item">Тайный аудит <em>//</em></span>
+      <span class="marquee__item">Реклама в СМИ <em>//</em></span>
     </div>
   </div>
 
@@ -574,18 +610,18 @@ main{position:relative;z-index:1}
     <a class="btn btn--solid" href="#contacts" data-magnetic data-reveal>Стать клиентом <span class="btn__arrow">→</span></a>
     <div class="cta__marquee-wrap marquee marquee--reverse" aria-hidden="true">
       <div class="marquee__track">
-        <span class="marquee__item">Ваши пожелания — наш каталог <em>✦</em></span>
-        <span class="marquee__item">Промо <em>✦</em></span>
-        <span class="marquee__item">Праздники <em>✦</em></span>
-        <span class="marquee__item">Аудит <em>✦</em></span>
-        <span class="marquee__item">POSM <em>✦</em></span>
-        <span class="marquee__item">Рассылка <em>✦</em></span>
-        <span class="marquee__item">Ваши пожелания — наш каталог <em>✦</em></span>
-        <span class="marquee__item">Промо <em>✦</em></span>
-        <span class="marquee__item">Праздники <em>✦</em></span>
-        <span class="marquee__item">Аудит <em>✦</em></span>
-        <span class="marquee__item">POSM <em>✦</em></span>
-        <span class="marquee__item">Рассылка <em>✦</em></span>
+        <span class="marquee__item">Ваши пожелания — наш каталог <em>//</em></span>
+        <span class="marquee__item">Промо <em>//</em></span>
+        <span class="marquee__item">Праздники <em>//</em></span>
+        <span class="marquee__item">Аудит <em>//</em></span>
+        <span class="marquee__item">POSM <em>//</em></span>
+        <span class="marquee__item">Рассылка <em>//</em></span>
+        <span class="marquee__item">Ваши пожелания — наш каталог <em>//</em></span>
+        <span class="marquee__item">Промо <em>//</em></span>
+        <span class="marquee__item">Праздники <em>//</em></span>
+        <span class="marquee__item">Аудит <em>//</em></span>
+        <span class="marquee__item">POSM <em>//</em></span>
+        <span class="marquee__item">Рассылка <em>//</em></span>
       </div>
     </div>
   </section>
@@ -784,19 +820,28 @@ main{position:relative;z-index:1}
     });
   }
 
-  /* ---------- Header hide/reveal on scroll ---------- */
+  /* ---------- Header: прозрачная на hero, облачко при скролле ---------- */
   function initHeader(){
     var header = document.getElementById('header');
-    var lastY = 0;
-    function onScroll(y){
-      header.classList.toggle('is-scrolled', y > 40);
-      var goingDown = y > lastY;
-      if (y > 140 && goingDown) header.classList.add('is-hidden');
-      else header.classList.remove('is-hidden');
-      lastY = y;
+    var ticking = false;
+    function update(y){
+      ticking = false;
+      header.classList.toggle('at-top', y < 60);
+      header.classList.toggle('pill', y >= 60);
     }
-    if (lenis){ lenis.on('scroll', function(e){ onScroll(e.scroll); }); }
-    else { window.addEventListener('scroll', function(){ onScroll(window.scrollY); }, { passive: true }); }
+    update(lenis ? lenis.scroll : window.scrollY);
+    if (lenis){
+      lenis.on('scroll', function(e){
+        if (!ticking){ ticking = true; requestAnimationFrame(function(){ update(e.scroll); }); }
+      });
+    } else {
+      window.addEventListener('scroll', function(){
+        if (!ticking){
+          ticking = true;
+          requestAnimationFrame(function(){ update(window.scrollY); });
+        }
+      }, { passive: true });
+    }
   }
 
   /* ---------- Mobile menu ---------- */
